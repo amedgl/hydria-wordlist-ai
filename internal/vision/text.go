@@ -1,7 +1,3 @@
-// internal/vision/text.go
-// Text-based OSINT analysis — sends keyword hints to Gemini and returns the
-// same AnalysisResult struct as image analysis, so the rest of the pipeline
-// is completely unchanged.
 package vision
 
 import (
@@ -43,9 +39,6 @@ Rules:
 - Return ONLY valid JSON, no markdown code blocks
 `
 
-// AnalyzeText sends free-form keyword text to Gemini and returns parsed clues.
-// The returned AnalysisResult is identical in structure to image analysis output,
-// so the wordlist engine and the rest of the pipeline require no changes.
 func AnalyzeText(ctx context.Context, text, apiKey, modelName string) (AnalysisResult, error) {
 	if strings.TrimSpace(text) == "" {
 		return AnalysisResult{}, fmt.Errorf("text input is empty")
@@ -80,7 +73,6 @@ func AnalyzeText(ctx context.Context, text, apiKey, modelName string) (AnalysisR
 	}
 	raw := strings.TrimSpace(rawBuilder.String())
 
-	// Strip markdown code block if model wraps output
 	if strings.HasPrefix(raw, "```") {
 		lines := strings.Split(raw, "\n")
 		if len(lines) > 2 {
