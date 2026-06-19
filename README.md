@@ -23,6 +23,18 @@
 
 ---
 
+## 📖 Table of Contents
+- [⚠️ Legal Disclaimer](#️-legal-disclaimer)
+- [🔥 Features & AI Jailbreak](#-features--ai-jailbreak)
+- [🧠 How It Works](#-how-it-works)
+- [🚀 Installation](#-installation)
+- [💻 Usage](#-usage)
+- [🔐 Supported Protocols](#-supported-protocols)
+- [⚙️ Configuration](#️-configuration)
+- [🐛 Troubleshooting](#-troubleshooting)
+
+---
+
 ## ⚠️ Legal Disclaimer
 
 > **This tool is for educational and authorized penetration testing purposes only.**
@@ -43,16 +55,32 @@ Modern LLMs are equipped with strict safety filters that block requests related 
 
 ## 🧠 How It Works
 
-```
-┌──────────────┐    ┌─────────────────────┐    ┌──────────────────┐    ┌──────────────┐
-│  Upload      │───▶│  Gemini Vision API  │───▶│  Smart Wordlist  │───▶│  THC-Hydra   │
-│  Image/Text  │    │  OSINT Analysis     │    │  Generation      │    │  Attack      │
-└──────────────┘    └─────────────────────┘    └──────────────────┘    └──────┬───────┘
-                                                                               │
-                                                        ┌──────────────────────▼───────┐
-                                                        │  SQLite Tracker              │
-                                                        │  NEVER retries a password    │
-                                                        └──────────────────────────────┘
+```mermaid
+graph LR
+    subgraph Input Phase
+    A1[fa:fa-file-image Image] --> B{HydrIA Core}
+    A2[fa:fa-font Text/Keywords] --> B
+    end
+
+    subgraph Analysis Phase
+    B -->|Bypass Prompt| C[fa:fa-robot Gemini Vision API]
+    C -->|JSON Profile| D[fa:fa-list Smart Wordlist Generator]
+    D -->|Mutation Rules| E[(Wordlist Database)]
+    end
+
+    subgraph Attack Phase
+    E -->|Batch Passwords| F[fa:fa-fire THC-Hydra]
+    F -->|Success?| G{Target}
+    F -->|Fail| H[(SQLite Tracker)]
+    H -.->|Filter Used| E
+    end
+
+    style B fill:#8A2BE2,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#4285F4,stroke:#333,stroke-width:2px,color:#fff
+    style F fill:#DB4437,stroke:#333,stroke-width:2px,color:#fff
+    style G fill:#0F9D58,stroke:#333,stroke-width:2px,color:#fff
+    style H fill:#607D8B,stroke:#333,stroke-width:2px,color:#fff
+    style E fill:#F4B400,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 | Step | What Happens |
@@ -97,7 +125,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 ---
 
-## 📖 Usage
+## 💻 Usage
 
 ### Basic Text Attack
 
@@ -126,7 +154,7 @@ go run main.go --text "john doe 1990 istanbul fenerbahce" -t 192.168.1.10 -p 222
 go run main.go --text "ali yilmaz 1992 trabzon" -t 192.168.1.10 -s ssh -u admin --dry-run
 
 # List all saved sessions
-go run main.go sessions
+go run main.go --sessions
 
 # Resume a paused or crashed attack
 go run main.go --session sess_20260501_012710_abc123 -t 192.168.1.10 -s ssh -u admin
